@@ -6,9 +6,9 @@ import numpy as np
 
 ns = 0
 ne = 500
-n_procs = 4 # number of processors that did the cholla calculation
-dnamein = '../../data/cloud_wind/1_1024/hdf5/raw/'
-dnameout = '../../data/cloud_wind/1_1024/hdf5/'
+n_procs = 2 # number of processors that did the cholla calculation
+dnamein = '../../data/cloud_wind/2/512/hdf5/raw/'
+dnameout = '../../data/cloud_wind/2/512/hdf5/'
 
 DE = False # set to True if Dual Energy flag was used
 SCALAR = False # set to True if Scalar was used
