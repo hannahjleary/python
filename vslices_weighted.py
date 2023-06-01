@@ -6,6 +6,7 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 mp = 1.672622e-24 # mass of hydrogren atom, in grams
 kb = 1.380658e-16 # boltzmann constant in ergs/K
+mu = 1.0
 
 DE = 0 # Dual Energy Flag
 
@@ -19,6 +20,7 @@ cat = [False, False, True, True]
 t_cc = 4.89e3 # cloud crushing time in kyr
 iend = 500
 time = 0
+
 for i in range(iend):
 
     fig, axs = plt.subplots(nrows=len(sims), ncols=1)
@@ -40,6 +42,7 @@ for i in range(iend):
         dx = head['dx'][0] # width of cell in x direction
 
         v_c = head['velocity_unit']
+        d_c = head['density_unit']
 
         r = ny/16
 
@@ -53,15 +56,20 @@ for i in range(iend):
         km = 1e-5
         vx = vx*v_c*km #velocity in the x direction
 
+        d_avg = np.mean(d)
+        n = d * d_c/ (mu*mp) # number density, particles per cm^3  
+        n_avg = np.mean(n)
+        vx = vx*n/n_avg
+
         f.close()
 
         # print('\t min \t\t\t max')
-        # print('Vx: ', np.min(Vx) , '\t' , np.max(Vx))
+        # print('Vx: ', np.min(vx) , '\t' , np.max(vx))
 
         vmin = 0.0
-        vmax = 100.0
+        vmax = 800.0
 
-        im = axs[j].imshow(vx.T, cmap='YlOrRd', vmin=vmin, vmax = vmax) 
+        im = axs[j].imshow(vx.T, cmap='plasma', vmin=vmin, vmax = vmax) 
         axs[j].set_ylabel(labels[j], size=8, rotation='horizontal', ha='right', va='center', color=fig_color)
         axs[j].set_xticks(np.linspace(0,nx,9))
         axs[j].set_yticks(np.linspace(0,nz,5))
@@ -89,6 +97,6 @@ for i in range(iend):
 
     fig.text(0.64, 0.9, str(int(t/t_cc))+r' $t_{cc}$', size=8, color=fig_color)
 
-    plt.savefig(dnameout + str(i) + '.png', dpi=300, 
+    plt.savefig(dnameout + str(i) + '_weighted.png', dpi=300, 
                 bbox_inches='tight', pad_inches = 0.1, facecolor=bg_color) #facecolor=bg_color
     plt.close(fig)

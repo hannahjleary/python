@@ -5,11 +5,11 @@ import h5py
 import numpy as np
 
 ns = 0
-ne = 500
+ne = 100
 step = 10 # n_hydro
-n_procs = 2 # number of processors that did the cholla calculation
-dnamein = '../../data/cloud_wind/2/512/hdf5/raw/'
-dnameout = '../../data/cloud_wind/2/512/hdf5/'
+n_procs = 16 # number of processors that did the cholla calculation
+dnamein = '../../data/cloud_wind/2/1024/hdf5/raw/'
+dnameout = '../../data/cloud_wind/2/1024/hdf5/'
 
 DE = 0
 

@@ -9,12 +9,13 @@ kb = 1.380658e-16 # boltzmann constant in ergs/K
 
 DE = 0 # Dual Energy Flag
 
-dnamein='../../data/cloud_wind/2/256/hdf5/' # directory where the file is located
-dnameout='../../data/cloud_wind/2/256/png/' # directory where the plot will be saved
+dnamein='../../data/cloud_wind/4/128/hdf5/' # directory where the file is located
+dnameout='../../data/cloud_wind/4/128/png/' # directory where the plot will be saved
 
 CAT = 0
 
-t_cc = 4.89e3 # cloud crushing time in kyr
+t_cc = 4.89e3 # cloud crushing time in kyr (vwind = 100 km/s)
+# t_cc = 4.89e3 # cloud crushing time in kyr (vwind = 1000 km/s)
 iend = 500
 time = 0
 
@@ -82,14 +83,19 @@ for i in range(iend):
 
     f.close()
 
-    Tmin = 4.4
-    Tmax = 6.5
+    # print('\t min \t\t\t max')
+    # print('n: ', np.min(logn) , '\t' , np.max(logn))
+    # print('T: ', np.min(logT) , '\t' , np.max(logT))
+    # print('Vx: ', np.min(Vx) , '\t' , np.max(Vx))
 
-    nmin = 19.3
+    Tmin = 3.0
+    Tmax = 6.2
+
+    nmin = 19.2
     nmax = 20.6
 
     vmin = 0.0
-    vmax = 100.0
+    vmax = 170.0
 
     subplots = [logT.T, logn.T, Vx.T]
     mins = [Tmin, nmin, vmin]
