@@ -6,20 +6,32 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 mp = 1.672622e-24 # mass of hydrogren atom, in grams
 kb = 1.380658e-16 # boltzmann constant in ergs/K
+mu = 0.6 # mean molecular weight (mu) of 1
 
-DE = 0 # Dual Energy Flag
+DE = 1 # Dual Energy Flag
 
-dnamein='../../data/cloud_wind/4/128/hdf5/' # directory where the file is located
-dnameout='../../data/cloud_wind/4/128/png/' # directory where the plot will be saved
+dnamein='../../data/cloud_wind/5/R8/hdf5/' # directory where the file is located
+dnameout='../../data/cloud_wind/5/R8/png/' # directory where the plot will be saved
 
 CAT = 0
 
+# t_cc = 4.89e4 # (vwind = 10 km/s)
 t_cc = 4.89e3 # cloud crushing time in kyr (vwind = 100 km/s)
-# t_cc = 4.89e3 # cloud crushing time in kyr (vwind = 1000 km/s)
+# t_cc = 4.89e2 # cloud crushing time in kyr (vwind = 1000 km/s)
+istart = 0
 iend = 500
 time = 0
 
-for i in range(iend):
+Tmin = 3.9
+Tmax = 6.8
+
+nmin = 19.5
+nmax = 20.8
+
+vmin = 0.0
+vmax = 100.0
+
+for i in range(istart, iend):
     
     if CAT:
         f = h5py.File(dnamein + str(i) + '_slice.h5', 'r') # open the hdf5 file for reading
@@ -47,12 +59,11 @@ for i in range(iend):
     pz  = f['mz_xy'][:]
     E = f['E_xy'][:]
 
-    f.close()
-
     if DE:
         GE = f['GE_xy'][:]
 
-    mu = 1.0 # mean molecular weight (mu) of 1
+    f.close()
+
     n = d * d_c/ (mu*mp) # number density, particles per cm^3  
 
     vx = px/d
@@ -83,19 +94,12 @@ for i in range(iend):
 
     f.close()
 
+    # print(d_c)
+    # print(p_c)
     # print('\t min \t\t\t max')
     # print('n: ', np.min(logn) , '\t' , np.max(logn))
     # print('T: ', np.min(logT) , '\t' , np.max(logT))
     # print('Vx: ', np.min(Vx) , '\t' , np.max(Vx))
-
-    Tmin = 3.0
-    Tmax = 6.2
-
-    nmin = 19.2
-    nmax = 20.6
-
-    vmin = 0.0
-    vmax = 170.0
 
     subplots = [logT.T, logn.T, Vx.T]
     mins = [Tmin, nmin, vmin]
@@ -121,7 +125,8 @@ for i in range(iend):
         if j == (len(subplots)-1):
             axs[j].tick_params(axis='both', which='both', direction='in', color=fig_color, bottom=1, left=1, top=1, right=1, 
                     labelleft=0, labelbottom=1, labeltop=0, labelright=0, labelcolor=fig_color, labelsize=6)
-            axs[j].set_xticklabels(np.round(np.arange(0,nx*dx+.01,0.2),1))
+            axs[j].set_xticklabels(np.round(np.arange(0,nx*dx+.01,0.3),1))
+            # print(nx*dx)
             [l.set_visible(False) for (i,l) in enumerate(axs[j].xaxis.get_ticklabels()) if i % 2 != 0]
             axs[j].set_xlabel('$kpc$', size=8, color=fig_color)
         else:
@@ -138,6 +143,7 @@ for i in range(iend):
 
 
     fig.text(0.5, 0.9, str(int(t/t_cc))+r' $t_{cc}$', size=8, color=fig_color)
+    # fig.text(0.5, 0.9, str(t)+r' $Myr$', size=8, color=fig_color)
 
     plt.savefig(dnameout + str(i) + '.png', dpi=300, 
                 bbox_inches='tight', pad_inches = 0.2, facecolor=bg_color) #facecolor=bg_color

@@ -9,14 +9,15 @@ kb = 1.380658e-16 # boltzmann constant in ergs/K
 
 DE = 0 # Dual Energy Flag
 
-dnamein='../data/' # directory where the file is located
-dnameout='../plots/' # directory where the plot will be saved
+dnamein='../../data/cloud_wind/3/1024/hdf5/' # directory where the file is located
+dnameout='../../data/cloud_wind/3/1024/' # directory where the plot will be saved
 
-iend = 125
+iend = 1
+t_cc = 4.89e2
 
 for i in range(iend):
 
-    f = h5py.File(dnamein + str(i) + '.h5.0', 'r') # open the hdf5 file for reading
+    f = h5py.File(dnamein + str(100) + '.h5', 'r') # open the hdf5 file for reading
     head = f.attrs # read the header attributes into a structure, called head
 
     head.keys()
@@ -99,7 +100,7 @@ for i in range(iend):
     vmax = 110.0
 
 
-    subplots = [logT_slice_xz.T, log_n_y.T, Vx.T]
+    subplots = [logT_slice_xz.T, log_n_y.T, Vxslice_xz.T]
     mins = [Tmin, nmin, vmin]
     maxs = [Tmax, nmax, vmax]
     cmaps = ['plasma', 'viridis', 'YlOrRd']

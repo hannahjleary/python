@@ -8,23 +8,24 @@ mp = 1.672622e-24 # mass of hydrogren atom, in grams
 kb = 1.380658e-16 # boltzmann constant in ergs/K
 
 DE = 0 # Dual Energy Flag
-T_CLOUD_PLOT = 1
+T_CLOUD_PLOT = 0
 D_CLOUD_PLOT = 1
 
-dnamein='../../data/cloud_wind/2/' # directory where the file is located
-dnameout='../../data/cloud_wind/2/png/' # directory where the plot will be saved
+dnamein='../../data/cloud_wind/4.1/' # directory where the file is located
+dnameout='../../data/cloud_wind/4.1/png/' # directory where the plot will be saved
 
 # t_cc = 4.89e3 # cloud crushing time in kyr
 iend = 500
 n_step = 10
 num = int(iend/n_step)
 
-sims = ['128/', '256/', '512/', '1024/']
+sims = ['R4/', 'R8/', 'R16/']
 if T_CLOUD_PLOT:
-    velocities_T = [np.empty(num), np.empty(num), np.empty(num), np.empty(num)]
+    velocities_T = [np.empty(num), np.empty(num), np.empty(num)]
 if D_CLOUD_PLOT:
-    velocities_d = [np.empty(num), np.empty(num), np.empty(num), np.empty(num)]
-cat = [False, False, True, True]
+    velocities_d = [np.empty(num), np.empty(num), np.empty(num)]
+cat = [False, False, True]
+labels = ['$R_{4}$', '$R_{8}$', '$R_{16}$']
 
 for i in range(0, iend, n_step):
 
@@ -86,9 +87,10 @@ for i in range(0, iend, n_step):
         # print(np.min(T))
         # print(np.max(T))
         # print()
+        print(str(i) + ": " + sims[j])
 
         if T_CLOUD_PLOT:
-            clouds = np.where(T<2e4, Vx, np.NaN)
+            clouds = np.where(T<4e4, Vx, np.NaN)
             Vx_avg = np.nanmean(clouds)
             velocities_T[j][int(i/10)] = Vx_avg
 
@@ -109,7 +111,6 @@ else:
     fig_color = 'black'
     bg_color = 'white'
 
-labels = ['$R_{4}$', '$R_{8}$', '$R_{16}$', '$R_{32}$']
 times = np.arange(0,iend,n_step)
 
 ############ Cloud = < 2e4 K ########################
@@ -131,7 +132,7 @@ if T_CLOUD_PLOT:
     plt.setp(ax.spines.values(), color=fig_color)
     plt.setp([ax.get_xticklines(), ax.get_yticklines()], color=fig_color)
 
-    plt.savefig(dnameout + 'Vx_Tcloud.png', dpi=300, 
+    plt.savefig(dnameout + 'Vx_Tcloud_4.png', dpi=300, 
             bbox_inches='tight', pad_inches = 0.2, facecolor = bg_color) #facecolor=bg_color
     plt.close(fig)
 
@@ -145,7 +146,9 @@ if D_CLOUD_PLOT:
     ax.legend()
     ax.set_xlabel("t $[Myr]$", color=fig_color)
     ax.set_ylabel("Mean Cloud Velocity $[kms^{-1}]$", color=fig_color)
-    ax.set_xticks(np.arange(0, num+1, n_step))
+    ax.set_xticks(np.linspace(0,num,11))
+    # ax.set_xticks(np.arange(0, num+1, n_step))
+    ax.set_xticklabels(np.arange(0,10.1,1.0))
     ax.tick_params(labelsize=8)
     # ax.set_xticklabels(n_step*np.arange(0, num))
         # [l.set_visible(False) for (i,l) in enumerate(ax.xaxis.get_ticklabels()) if i % 10 != 0]
