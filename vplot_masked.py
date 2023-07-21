@@ -6,20 +6,21 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 mp = 1.672622e-24 # mass of hydrogren atom, in grams
 kb = 1.380658e-16 # boltzmann constant in ergs/K
+mu = 0.6 # mean molecular weight (mu) of 1
 
 DE = 0 # Dual Energy Flag
 T_CLOUD_PLOT = 0
 D_CLOUD_PLOT = 1
 
-dnamein='../../data/cloud_wind/4.1/' # directory where the file is located
-dnameout='../../data/cloud_wind/4.1/png/' # directory where the plot will be saved
+dnamein='../../data/cloud_wind/test/' # directory where the file is located
+dnameout='../../data/cloud_wind/test/png/' # directory where the plot will be saved
 
 # t_cc = 4.89e3 # cloud crushing time in kyr
 iend = 500
 n_step = 10
 num = int(iend/n_step)
 
-sims = ['R4/', 'R8/', 'R16/']
+sims = ['4/', '8/', '16/']
 if T_CLOUD_PLOT:
     velocities_T = [np.empty(num), np.empty(num), np.empty(num)]
 if D_CLOUD_PLOT:
@@ -58,13 +59,11 @@ for i in range(0, iend, n_step):
         pz  = f['momentum_z'][:]
         E = f['Energy'][:]
 
-        f.close()
-
-
         if DE:
             GE = f['GasEnergy'][:]
 
-        mu = 1.0 # mean molecular weight (mu) of 1
+        f.close()
+
         n = d * d_c/(mu*mp) # number density, particles per cm^3  
 
         vx = px/d

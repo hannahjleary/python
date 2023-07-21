@@ -8,8 +8,8 @@ import numpy as np
 ns = 0
 ne = 500
 n_procs = 6 # number of processors that did the cholla calculation
-dnamein = '../../data/cloud_wind/2.2/16/hdf5/raw/'
-dnameout = '../../data/cloud_wind/2.2/16/hdf5/'
+dnamein = '../../data/cloud_wind/4/16/hdf5/raw/'
+dnameout = '../../data/cloud_wind/4/16/hdf5/'
 
 # loop over the output times
 for n in range(ns, ne):
@@ -73,7 +73,7 @@ for n in range(ns, ne):
     dxy[xs:xs+nxl,ys:ys+nyl] += filein['d_xy']
     dxz[xs:xs+nxl,zs:zs+nzl] += filein['d_xz']
     Txy[xs:xs+nxl,ys:ys+nyl] += filein['T_xy']
-    Txz[xs:xs+nxl,zs:zs+nzl] += filein['T_xz']
+    # Txz[xs:xs+nxl,zs:zs+nzl] += filein['T_xz']
 
     filein.close()
 

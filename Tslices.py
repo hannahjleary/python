@@ -10,16 +10,16 @@ mu = 0.6 # mean molecular weight (mu) of 1
 
 DE = 1 # Dual Energy Flag
 
-dnamein='../../data/cloud_wind/1.2/' # directory where the file is located
-dnameout='../../data/cloud_wind/1.2/Tslices/' # directory where the plot will be saved
+dnamein='../../data/cloud_wind/4/' # directory where the file is located
+dnameout='../../data/cloud_wind/4/Tslices/' # directory where the plot will be saved
 
 sims = ['4/', '8/', '16/']
 labels = ['$R_{4}$', '$R_{8}$', '$R_{16}$']
 cat = [False, False, True]
 
 # t_cc = 4.89e4 # (vwind = 10 km/s)
-t_cc = 4.89e3 # cloud crushing time in kyr (vwind = 100 km/s)
-# t_cc = 4.89e2 # cloud crushing time in kyr (vwind = 1000 km/s)
+# t_cc = 4.89e3 # cloud crushing time in kyr (vwind = 100 km/s)
+t_cc = 4.89e2 # cloud crushing time in kyr (vwind = 1000 km/s)
 iend = 500
 
 for i in range(iend):
@@ -71,10 +71,10 @@ for i in range(iend):
         T = GE*(gamma-1.0)*p_c / (n*kb) #temperature
         logT = np.log10(T)
 
-        vmin = 4.5
-        vmax = 6.75
+        vmin = 4.0
+        vmax = 6.6
 
-        im = axs[j].imshow(logT.T, cmap='plasma', vmin=vmin, vmax = vmax) #, vmin=vmin, vmax = vmax
+        im = axs[j].imshow(logT.T, cmap='plasma') #, vmin=vmin, vmax = vmax
         axs[j].set_ylabel(labels[j], size=8, rotation='horizontal', ha='right', va='center', color=fig_color)
         axs[j].set_xticks(np.linspace(0,nx,9))
         axs[j].set_yticks(np.linspace(0,nz,5))

@@ -8,7 +8,7 @@ mp = 1.672622e-24 # mass of hydrogren atom, in grams
 kb = 1.380658e-16 # boltzmann constant in ergs/K
 mu = 0.6 # mean molecular weight (mu) of 1
 
-DE = 0 # Dual Energy Flag
+DE = 1 # Dual Energy Flag
 CAT = 0 # Conactenated Flag
 
 adiabatic='../../data/cloud_wind/1.2/8/hdf5/' # directory where the file is located
@@ -18,7 +18,7 @@ dnameout='../../plots/compare100/' # directory where the plot will be saved
 # t_cc = 4.89e4 # (vwind = 10 km/s)
 t_cc = 4.89e3 # cloud crushing time in kyr (vwind = 100 km/s)
 # t_cc = 4.89e2 # cloud crushing time in kyr (vwind = 1000 km/s)
-iend = 1
+iend = 500
 
 TEMP = 0
 DENS = 0
@@ -122,7 +122,7 @@ for i in range(iend):
             plot = logn
             units = '$kms^{-1}$'
 
-        im = axs[j].imshow(plot.T, cmap='plasma') 
+        im = axs[j].imshow(plot.T, cmap='plasma', vmin=-25, vmax=225) 
         axs[j].text(0.03*nx,0.85*ny,labels[j], size=10, color=fig_color)
         axs[j].set_xticks(np.linspace(0,nx,9))
         axs[j].set_yticks(np.linspace(0,nz,5))
@@ -146,7 +146,7 @@ for i in range(iend):
         cb.ax.yaxis.set_tick_params(color=fig_color, labelsize=8)
         cb.outline.set_edgecolor(fig_color)
         plt.setp(cbar_yticks, color=fig_color)
-        cb.ax.set_ylabel(label, size=10, color=fig_color) 
+        cb.ax.set_ylabel(units, size=10, color=fig_color) 
 
     fig.subplots_adjust(wspace=0.3, hspace=0.1)
 

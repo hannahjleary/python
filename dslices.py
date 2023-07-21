@@ -8,8 +8,8 @@ mp = 1.672622e-24 # mass of hydrogren atom, in grams
 kb = 1.380658e-16 # boltzmann constant in ergs/K
 mu = 0.6 # mean molecular weight (mu) of 1
 
-dnamein='../../data/cloud_wind/2.2/' # directory where the file is located
-dnameout='../../data/cloud_wind/2.2/dslices/' # directory where the plot will be saved
+dnamein='../../data/cloud_wind/4/' # directory where the file is located
+dnameout='../../data/cloud_wind/4/dslices/' # directory where the plot will be saved
 
 sims = ['4/', '8/', '16/']
 labels = ['$R_{4}$', '$R_{8}$', '$R_{16}$']
@@ -56,10 +56,10 @@ for i in range(iend):
         n = d / (mu*mp) # number density, particles per cm^3  
         logn = np.log10(n)
 
-        vmin = 19.6
-        vmax = 20.4
+        vmin = 19.5
+        vmax = 20.9
 
-        im = axs[j].imshow(logn.T, cmap='viridis', vmin=vmin, vmax = vmax) #, vmin=vmin, vmax = vmax
+        im = axs[j].imshow(logn.T, cmap='viridis') #, vmin=vmin, vmax = vmax
         axs[j].set_ylabel(labels[j], size=8, rotation='horizontal', ha='right', va='center', color=fig_color)
         axs[j].set_xticks(np.linspace(0,nx,9))
         axs[j].set_yticks(np.linspace(0,nz,5))
