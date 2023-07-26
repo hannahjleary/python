@@ -8,10 +8,10 @@ mp = 1.672622e-24 # mass of hydrogren atom, in grams
 kb = 1.380658e-16 # boltzmann constant in ergs/K
 mu = 0.6 # mean molecular weight (mu) of 1
 
-DE = 1 # Dual Energy Flag
+DE = 0 # Dual Energy Flag
 
-dnamein='../../data/cloud_wind/4/' # directory where the file is located
-dnameout='../../data/cloud_wind/4/Tslices/' # directory where the plot will be saved
+dnamein='../../data/cloud_wind/4_high/' # directory where the file is located
+dnameout='../../data/cloud_wind/4_high/Tslices/' # directory where the plot will be saved
 
 sims = ['4/', '8/', '16/']
 labels = ['$R_{4}$', '$R_{8}$', '$R_{16}$']
@@ -71,10 +71,10 @@ for i in range(iend):
         T = GE*(gamma-1.0)*p_c / (n*kb) #temperature
         logT = np.log10(T)
 
-        vmin = 4.0
-        vmax = 6.6
+        vmin = 3.0
+        vmax = 7.0
 
-        im = axs[j].imshow(logT.T, cmap='plasma') #, vmin=vmin, vmax = vmax
+        im = axs[j].imshow(logT.T, cmap='plasma', vmin=vmin, vmax = vmax) #, vmin=vmin, vmax = vmax
         axs[j].set_ylabel(labels[j], size=8, rotation='horizontal', ha='right', va='center', color=fig_color)
         axs[j].set_xticks(np.linspace(0,nx,9))
         axs[j].set_yticks(np.linspace(0,nz,5))

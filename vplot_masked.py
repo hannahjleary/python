@@ -12,10 +12,9 @@ DE = 0 # Dual Energy Flag
 T_CLOUD_PLOT = 0
 D_CLOUD_PLOT = 1
 
-dnamein='../../data/cloud_wind/test/' # directory where the file is located
-dnameout='../../data/cloud_wind/test/png/' # directory where the plot will be saved
+dnamein='../../data/cloud_wind/4_lowest/' # directory where the file is located
+dnameout='../../data/cloud_wind/4_lowest/png/' # directory where the plot will be saved
 
-# t_cc = 4.89e3 # cloud crushing time in kyr
 iend = 500
 n_step = 10
 num = int(iend/n_step)
@@ -145,9 +144,8 @@ if D_CLOUD_PLOT:
     ax.legend()
     ax.set_xlabel("t $[Myr]$", color=fig_color)
     ax.set_ylabel("Mean Cloud Velocity $[kms^{-1}]$", color=fig_color)
-    ax.set_xticks(np.linspace(0,num,11))
-    # ax.set_xticks(np.arange(0, num+1, n_step))
-    ax.set_xticklabels(np.arange(0,10.1,1.0))
+    ax.set_xticks(np.arange(0, 50+1, n_step))
+    ax.set_xticklabels(np.arange(0,16,3))
     ax.tick_params(labelsize=8)
     # ax.set_xticklabels(n_step*np.arange(0, num))
         # [l.set_visible(False) for (i,l) in enumerate(ax.xaxis.get_ticklabels()) if i % 10 != 0]

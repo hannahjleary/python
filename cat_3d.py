@@ -8,8 +8,8 @@ ns = 0
 ne = 500
 step = 10 # n_hydro
 n_procs = 6 # number of processors that did the cholla calculation
-dnamein = '../../data/cloud_wind/4/16/hdf5/raw/'
-dnameout = '../../data/cloud_wind/4/16/hdf5/'
+dnamein = '../../data/cloud_wind/4_highest/16/hdf5/raw/'
+dnameout = '../../data/cloud_wind/4_highest/16/hdf5/'
 
 DE = 1
 

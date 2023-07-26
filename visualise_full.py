@@ -6,18 +6,19 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 mp = 1.672622e-24 # mass of hydrogren atom, in grams
 kb = 1.380658e-16 # boltzmann constant in ergs/K
+mu = 0.6
 
-DE = 0 # Dual Energy Flag
+DE = 1 # Dual Energy Flag
 
-dnamein='../../data/cloud_wind/3/1024/hdf5/' # directory where the file is located
-dnameout='../../data/cloud_wind/3/1024/' # directory where the plot will be saved
+dnamein='../../data/cloud_wind/4_largediff/16/hdf5/' # directory where the file is located
+dnameout='../../data/cloud_wind/4_largediff/16/png/' # directory where the plot will be saved
 
-iend = 1
+iend = 500
 t_cc = 4.89e2
 
-for i in range(iend):
+for i in range(0, iend, 10):
 
-    f = h5py.File(dnamein + str(100) + '.h5', 'r') # open the hdf5 file for reading
+    f = h5py.File(dnamein + str(i) + '.h5', 'r') # open the hdf5 file for reading
     head = f.attrs # read the header attributes into a structure, called head
 
     head.keys()
@@ -46,12 +47,11 @@ for i in range(iend):
     pz  = f['momentum_z'][:]
     E = f['Energy'][:]
 
-    f.close()
-
     if DE:
         GE = f['GasEnergy'][:]
 
-    mu = 1.0 # mean molecular weight (mu) of 1
+    f.close()
+
     n = d * d_c/(mu*mp) # number density, particles per cm^3  
 
     vx = px/d
@@ -90,14 +90,14 @@ for i in range(iend):
     #Velocity in the x-direction Slice
     Vxslice_xz = Vx[:,int(ny/2),:]
 
-    Tmin = 4.7
-    Tmax = 6.7
+    Tmin = 3.0
+    Tmax = 7.0
 
-    nmin = 19.0
-    nmax = 20.3
+    nmin = 18.0
+    nmax = 30.0
 
     vmin = 0.0
-    vmax = 110.0
+    vmax = 1300.0
 
 
     subplots = [logT_slice_xz.T, log_n_y.T, Vxslice_xz.T]

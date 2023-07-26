@@ -10,26 +10,26 @@ mu = 0.6 # mean molecular weight (mu) of 1
 
 DE = 1 # Dual Energy Flag
 
-dnamein='../../data/cloud_wind/5/R8/hdf5/' # directory where the file is located
-dnameout='../../data/cloud_wind/5/R8/png/' # directory where the plot will be saved
+dnamein='../../data/cloud_wind//4_largediff/4/hdf5/' # directory where the file is located
+dnameout='../../data/cloud_wind/4_largediff/4/png/' # directory where the plot will be saved
 
 CAT = 0
 
 # t_cc = 4.89e4 # (vwind = 10 km/s)
-t_cc = 4.89e3 # cloud crushing time in kyr (vwind = 100 km/s)
-# t_cc = 4.89e2 # cloud crushing time in kyr (vwind = 1000 km/s)
+# t_cc = 4.89e3 # cloud crushing time in kyr (vwind = 100 km/s)
+t_cc = 4.89e2 # cloud crushing time in kyr (vwind = 1000 km/s)
 istart = 0
 iend = 500
 time = 0
 
-Tmin = 3.9
-Tmax = 6.8
+Tmin = 2
+Tmax = 8
 
-nmin = 19.5
-nmax = 20.8
+nmin = 18.0
+nmax = 22.0
 
 vmin = 0.0
-vmax = 100.0
+vmax = 1500.0
 
 for i in range(istart, iend):
     
