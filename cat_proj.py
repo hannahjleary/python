@@ -6,10 +6,11 @@ import h5py
 import numpy as np
 
 ns = 0
-ne = 500
-n_procs = 6 # number of processors that did the cholla calculation
-dnamein = '../../data/cloud_wind/4/16/hdf5/raw/'
-dnameout = '../../data/cloud_wind/4/16/hdf5/'
+ne = 1
+# step = 10 # n_hydro
+n_procs = 8 # number of processors that did the cholla calculation
+dnamein = '../../../../../ix/eschneider/hjl28/data/cloud_wind/4/48retry/hdf5/raw/'
+dnameout = '../../../../../ix/eschneider/hjl28/data/cloud_wind/4/48retry/hdf5/'
 
 # loop over the output times
 for n in range(ns, ne):
@@ -21,10 +22,9 @@ for n in range(ns, ne):
   for i in range(0, n_procs):
 
     # open the input file for reading
-    filein = h5py.File(dnamein+str(n)+'_proj.h5.'+str(i), 'r')
+    filein = h5py.File(dnamein+str(n)+'/'+str(n)+'_proj.h5.'+str(i), 'r')
     # read in the header data from the input file
     head = filein.attrs
-
     # if it's the first input file, write the header attributes
     # and create the datasets in the output file
     if (i == 0):
@@ -73,7 +73,7 @@ for n in range(ns, ne):
     dxy[xs:xs+nxl,ys:ys+nyl] += filein['d_xy']
     dxz[xs:xs+nxl,zs:zs+nzl] += filein['d_xz']
     Txy[xs:xs+nxl,ys:ys+nyl] += filein['T_xy']
-    # Txz[xs:xs+nxl,zs:zs+nzl] += filein['T_xz']
+    Txz[xs:xs+nxl,zs:zs+nzl] += filein['T_xz']
 
     filein.close()
 

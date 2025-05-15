@@ -11,9 +11,9 @@ mu = 0.6 # mean molecular weight (mu) of 1
 dnamein='../../data/cloud_wind/4_high/' # directory where the file is located
 dnameout='../../data/cloud_wind/4_high/dslices/' # directory where the plot will be saved
 
-sims = ['4/', '8/', '16/']
-labels = ['$R_{4}$', '$R_{8}$', '$R_{16}$']
-cat = [False, False, True]
+sims = ['4/', '8/', '16/', '32/']
+labels = ['$R_{4}$', '$R_{8}$', '$R_{16}$', '$R_{32}$']
+cat = [False, False, True, True]
 
 # t_cc = 4.89e4 # (vwind = 10 km/s)
 # t_cc = 4.89e3 # cloud crushing time in kyr (vwind = 100 km/s)
@@ -73,7 +73,7 @@ for i in range(iend):
         if j == (len(sims)-1):
             axs[j].tick_params(axis='both', which='both', direction='in', color=fig_color, bottom=1, left=1, top=1, right=1, 
                     labelleft=0, labelbottom=1, labeltop=0, labelright=0, labelcolor=fig_color, labelsize=6)
-            axs[j].set_xticklabels(np.round(np.arange(0,nx*dx+.01,0.3),1))
+            axs[j].set_xticklabels(np.round(np.arange(0,nx*dx+.01,0.15),1))
             [l.set_visible(False) for (i,l) in enumerate(axs[j].xaxis.get_ticklabels()) if i % 2 != 0]
             axs[j].set_xlabel('$kpc$', size=8, color=fig_color)
         else:
@@ -85,9 +85,9 @@ for i in range(iend):
     cb.ax.yaxis.set_tick_params(color=fig_color, labelsize=6)
     cb.outline.set_edgecolor(fig_color)
     plt.setp(cbar_yticks, color=fig_color)
-    cb.ax.set_ylabel('$log_{10}(N_{H})$ [$cm^{-2}$]', size=8, color=fig_color)
+    cb.ax.set_ylabel('$log_{10}(N_{H} [cm^{-2}])$', size=8, color=fig_color)
 
-    fig.text(0.6, 0.9, str(int(t/t_cc))+r' $t_{cc}$', size=8, color=fig_color)
+    fig.text(0.64, 0.9, str(int(t/t_cc))+r' $t_{cc}$', size=8, color=fig_color)
 
     plt.savefig(dnameout + str(i) + '.png', dpi=300, 
                 bbox_inches='tight', pad_inches = 0.1, facecolor=bg_color) #facecolor=bg_color

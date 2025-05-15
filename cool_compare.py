@@ -6,37 +6,36 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 mp = 1.672622e-24 # mass of hydrogren atom, in grams
 kb = 1.380658e-16 # boltzmann constant in ergs/K
-mu = 0.6 # mean molecular weight (mu) of 1
+mu = 0.6 # mean molecular weight (mu) of 0.6
 
 DE = 1 # Dual Energy Flag
-CAT = 0 # Conactenated Flag
+CAT = 1 # Conactenated Flag
 
-adiabatic='../../data/cloud_wind/1.2/8/hdf5/' # directory where the file is located
-cooling='../../data/cloud_wind/3/8/hdf5/' # directory where the file is located
-dnameout='../../plots/compare100/' # directory where the plot will be saved
+adiabatic_dir='../../data/cloud_wind/1/16/hdf5/' # directory where the file is located
+cooling_dir='../../data/cloud_wind/3/16/hdf5/' # directory where the file is located
+dnameout='../../plots/compare2/' # directory where the plot will be saved
 
 # t_cc = 4.89e4 # (vwind = 10 km/s)
 t_cc = 4.89e3 # cloud crushing time in kyr (vwind = 100 km/s)
 # t_cc = 4.89e2 # cloud crushing time in kyr (vwind = 1000 km/s)
-iend = 500
+iend = 10
 
 TEMP = 0
-DENS = 0
-VEL = 1
-
-T_adiabatic = 0
-T_cooling = 0
+DENS = 1
+VEL = 0
+adiabatic = 0
+cooling = 0
 plot = 0
-temps = [T_adiabatic, T_cooling]
-directories = [adiabatic, cooling]
-labels = ["adiabatic", "with cooling"]
+vals = [adiabatic, cooling]
+directories = [adiabatic_dir, cooling_dir]
+labels = ["adiabatic", "radiative cooling"]
 units = ['$log_{10}(K)$', '$log_{10}(N_{H})$ [$cm^{-2}$]', '$kms^{-1}$']
 
 for i in range(iend):
 
-    fig, axs = plt.subplots(nrows=2, ncols=1)
-    fig_color = 'white'
-    bg_color = 'black'
+    fig, axs = plt.subplots(nrows=2, ncols=1, sharex=True)
+    fig_color = 'black'
+    bg_color = 'white'
 
     for j in range(2):
         if TEMP or VEL:
@@ -92,13 +91,16 @@ for i in range(iend):
                 units = '$log_{10}(K)$'
             else:
                 plot = vx
-                units = '$log_{10}(N_{H})$ [$cm^{-2}$]'
+                units = '$km s^{-1}$'
+
+            if j==1:
+                plot = plot[0:2*nx//3,:,:]
 
         else:
             if CAT:
-                f = h5py.File(directories[j] + str(i) + '_slice.h5', 'r') 
+                f = h5py.File(directories[j] + str(i) + '_proj.h5', 'r') 
             else:
-                f = h5py.File(directories[j] + str(i) + '_slice.h5.0', 'r') 
+                f = h5py.File(directories[j] + str(i) + '_proj.h5.0', 'r') 
             head = f.attrs # read the header attributes into a structure, called head
 
             gamma = head['gamma'] # ratio of specific heats
@@ -120,10 +122,15 @@ for i in range(iend):
             logn = np.log10(n)
 
             plot = logn
-            units = '$kms^{-1}$'
+            units = units = '$log_{10}(N_{H} \ [cm^{-2}])$'
 
-        im = axs[j].imshow(plot.T, cmap='plasma', vmin=-25, vmax=225) 
-        axs[j].text(0.03*nx,0.85*ny,labels[j], size=10, color=fig_color)
+            if j==1:
+                plot = plot[0:2*nx//3,:,:]
+
+        im = axs[j].imshow(plot.T, cmap='viridis', vmin=19.6, vmax=21) 
+        axs[j].text(0.03*nx,0.85*ny,labels[j], size=10, color='white')
+        # axs[j].text(0.85*nx,0.85*ny, str(int(t/1000)) + ' Myr', size=10, color='white') 
+        axs[j].text(0.85*nx,0.85*ny, str(int(t/t_cc))+r' $t_{cc}$', size=10, color='white')
         axs[j].set_xticks(np.linspace(0,nx,9))
         axs[j].set_yticks(np.linspace(0,nz,5))
         axs[j].invert_yaxis()
@@ -131,27 +138,30 @@ for i in range(iend):
         plt.setp(axs[j].spines.values(), color=fig_color)
         plt.setp([axs[j].get_xticklines(), axs[j].get_yticklines()], color=fig_color)
 
-        if j == (len(temps)-1):
-            axs[j].tick_params(axis='both', which='both', direction='in', color=fig_color, bottom=1, left=1, top=1, right=1, 
+        if j == (len(vals)-1):
+            axs[j].tick_params(axis='both', which='both', direction='in', color='white', bottom=1, left=1, top=1, right=1, 
                     labelleft=0, labelbottom=1, labeltop=0, labelright=0, labelcolor=fig_color, labelsize=8)
             axs[j].set_xticklabels(np.round(np.arange(0,nx*dx+.01,0.3),1))
             [l.set_visible(False) for (i,l) in enumerate(axs[j].xaxis.get_ticklabels()) if i % 2 != 0]
             axs[j].set_xlabel('$kpc$', size=10, color=fig_color)
         else:
-            axs[j].tick_params(axis='both', which='both', direction='in', color=fig_color, bottom=1, left=1, top=1, right=1, 
+            axs[j].tick_params(axis='both', which='both', direction='in', color='white', bottom=1, left=1, top=1, right=1, 
                     labelleft=0, labelbottom=0, labeltop=0, labelright=0)
 
-        cb = plt.colorbar(im, ax=axs[j], aspect=30, pad=0.02)
-        cbar_yticks = plt.getp(cb.ax.axes, 'yticklabels')
-        cb.ax.yaxis.set_tick_params(color=fig_color, labelsize=8)
-        cb.outline.set_edgecolor(fig_color)
-        plt.setp(cbar_yticks, color=fig_color)
-        cb.ax.set_ylabel(units, size=10, color=fig_color) 
-
+        # cb = plt.colorbar(im, ax=axs[j], aspect=30, pad=0.02)
     fig.subplots_adjust(wspace=0.3, hspace=0.1)
 
-    fig.text(0.5, 0.9, str(int(t/t_cc))+r' $t_{cc}$', size=10, color=fig_color)
+    cb = fig.colorbar(im, ax=axs.ravel().tolist(), aspect=40, pad=.03)
+    cbar_yticks = plt.getp(cb.ax.axes, 'yticklabels')
+    cb.ax.yaxis.set_tick_params(color=fig_color, labelsize=8)
+    cb.outline.set_edgecolor(fig_color)
+    plt.setp(cbar_yticks, color=fig_color)
+    cb.ax.set_ylabel(units, size=10, color=fig_color) 
 
+    # fig.subplots_adjust(wspace=0.3, hspace=0.1)
+
+    # fig.text(0.5, 0.9, str(int(t))+r' $t_{cc}$', size=10, color=fig_color)
+    plt.suptitle('Column Density', color=fig_color,fontsize = 10, y=.93)
     plt.savefig(dnameout + str(i) + '.png', dpi=300, 
-                bbox_inches='tight', pad_inches = 0.2, facecolor=bg_color) #facecolor=bg_color
+                bbox_inches='tight', pad_inches = 0.2, facecolor=bg_color) #facecolor=bg_color or transparent=True
     plt.close(fig)

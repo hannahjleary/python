@@ -5,13 +5,13 @@ import h5py
 import numpy as np
 
 ns = 0
-ne = 500
+ne = 1
 step = 10 # n_hydro
-n_procs = 6 # number of processors that did the cholla calculation
-dnamein = '../../data/cloud_wind/4_highest/16/hdf5/raw/'
-dnameout = '../../data/cloud_wind/4_highest/16/hdf5/'
+n_procs = 28 # number of processors that did the cholla calculation
+dnamein = '../../../../../ix/eschneider/hjl28/data/cloud_wind/4/48retry/hdf5/raw/'
+dnameout = '../../../../../ix/eschneider/hjl28/data/cloud_wind/4/48retry/hdf5/'
 
-DE = 1
+DE = 0
 
 # loop over outputs
 for n in range(ns, ne, step):
@@ -22,7 +22,7 @@ for n in range(ns, ne, step):
     # open the output file for writing (don't overwrite if exists)
     fileout = h5py.File(dnameout+str(n)+'.h5', 'a')
     # open the input file for reading
-    filein = h5py.File(dnamein+str(n)+'.h5.'+str(i), 'r')
+    filein = h5py.File(dnamein+str(n)+'/'+str(n)+'_slice.h5.'+str(i), 'r')
     # read in the header data from the input file
     head = filein.attrs
 
@@ -32,9 +32,9 @@ for n in range(ns, ne, step):
       nx = head['dims'][0]
       ny = head['dims'][1]
       nz = head['dims'][2]
-      dx = head['dims'][0]
-      dy = head['dims'][1]
-      dz = head['dims'][2]
+      dx = head['dx'][0]
+      dy = head['dx'][1]
+      dz = head['dx'][2]
       fileout.attrs['dx'] = [dx,dy,dz]
       fileout.attrs['dims'] = [nx, ny, nz]
       fileout.attrs['gamma'] = [head['gamma'][0]]

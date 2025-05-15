@@ -2,6 +2,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import h5py
 
+## Plots cooling curves
+
 dnamein = "../../data/cooling_tables/"
 dnameout = "../../plots/"
 

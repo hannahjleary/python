@@ -90,14 +90,14 @@ for i in range(0, iend, 10):
     #Velocity in the x-direction Slice
     Vxslice_xz = Vx[:,int(ny/2),:]
 
-    Tmin = 3.0
+    Tmin = 2.9
     Tmax = 7.0
 
-    nmin = 18.0
-    nmax = 30.0
+    nmin = 18.95
+    nmax = 21.3
 
-    vmin = 0.0
-    vmax = 1300.0
+    vmin = -20
+    vmax = 130
 
 
     subplots = [logT_slice_xz.T, log_n_y.T, Vxslice_xz.T]

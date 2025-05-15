@@ -5,12 +5,13 @@ import h5py
 import numpy as np
 
 ns = 0
-ne = 500
-n_procs = 6 # number of processors that did the cholla calculation
-dnamein = '../../data/cloud_wind/4/16/hdf5/raw/'
-dnameout = '../../data/cloud_wind/4/16/hdf5/'
+ne = 1
+# step = 10 # n_hydro
+n_procs = 8 # number of processors that did the cholla calculation
+dnamein = '../../../../../ix/eschneider/hjl28/data/cloud_wind/4/8retry/hdf5/raw/'
+dnameout = '../../../../../ix/eschneider/hjl28/data/cloud_wind/4/8retry/hdf5/'
 
-DE = True # set to True if Dual Energy flag was used
+DE = False # set to True if Dual Energy flag was used
 SCALAR = False # set to True if Scalar was used
 
 # loop over the output times
@@ -23,7 +24,7 @@ for n in range(ns, ne):
   for i in range(0, n_procs):
 
     # open the input file for reading
-    filein = h5py.File(dnamein+str(n)+'_slice.h5.'+str(i), 'r')
+    filein = h5py.File(dnamein+str(n)+'/'+str(n)+'_slice.h5.'+str(i), 'r')
     # read in the header data from the input file
     head = filein.attrs
 
