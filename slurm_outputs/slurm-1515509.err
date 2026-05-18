@@ -1,0 +1,17 @@
+Warning: When compiling code please add the following flags to nvcc:
+         -gencode arch=compute_70,code=[compute_70,sm_70] 
+Warning: When compiling code please add the following flags to nvcc:
+         -gencode arch=compute_70,code=[compute_70,sm_70] 
+Warning: When compiling code please add the following flags to nvcc:
+         -gencode arch=compute_70,code=[compute_70,sm_70] 
+Traceback (most recent call last):
+  File "pre_plotting.py", line 37, in <module>
+    f = h5py.File(datadir + sims[0] + 'hdf5/0/' +str(0) + '.h5.0', 'r') 
+  File "/ihome/crc/install/power9/python/anaconda3-2019.10/lib/python3.7/site-packages/h5py/_hl/files.py", line 312, in __init__
+    fid = make_fid(name, mode, userblock_size, fapl, swmr=swmr)
+  File "/ihome/crc/install/power9/python/anaconda3-2019.10/lib/python3.7/site-packages/h5py/_hl/files.py", line 142, in make_fid
+    fid = h5f.open(name, flags, fapl=fapl)
+  File "h5py/_objects.pyx", line 54, in h5py._objects.with_phil.wrapper
+  File "h5py/_objects.pyx", line 55, in h5py._objects.with_phil.wrapper
+  File "h5py/h5f.pyx", line 78, in h5py.h5f.open
+OSError: Unable to open file (unable to open file: name = '../../../../../ix/eschneider/hjl28/data/adiabatic_PPMP/sub/plotting_data/4/hdf5/0/0.h5.0', errno = 2, error message = 'No such file or directory', flags = 0, o_flags = 0)

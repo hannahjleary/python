@@ -5,20 +5,22 @@ import h5py
 import numpy as np
 
 ns = 0
-ne = 1
-# step = 10 # n_hydro
-n_procs = 8 # number of processors that did the cholla calculation
-dnamein = '../../../../../ix/eschneider/hjl28/data/cloud_wind/4/8retry/hdf5/raw/'
-dnameout = '../../../../../ix/eschneider/hjl28/data/cloud_wind/4/8retry/hdf5/'
+ne = 300
+step = 1 # n_hydro
+n_procs = 2 # number of processors that did the cholla calculation
+dnamein = '../../../../../ix/eschneider/hjl28/data/tests/cloud_tracking/hdf5_large_ct/raw/'
+dnameout = '../../../../../ix/eschneider/hjl28/data/tests/cloud_tracking/hdf5_large_ct/'
 
-DE = False # set to True if Dual Energy flag was used
+DE = True # set to True if Dual Energy flag was used
 SCALAR = False # set to True if Scalar was used
 
 # loop over the output times
-for n in range(ns, ne):
+for n in range(ns, ne, step):
 
   # open the output file for writing
-  fileout = h5py.File(dnameout+str(n)+'_slice.h5', 'w')
+  fileout = h5py.File(dnameout+str(n)+'/'+str(n)+'_slice.h5', 'w')
+
+  print(n)
 
   # loop over files for a given output time
   for i in range(0, n_procs):

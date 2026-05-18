@@ -6,12 +6,12 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 mp = 1.672622e-24 # mass of hydrogren atom, in grams
 kb = 1.380658e-16 # boltzmann constant in ergs/K
-mu = 1.0 # mean molecular weight (mu) of 1
+mu = 0.6 # mean molecular weight (mu) of 1
 
 DE = 0 # Dual Energy Flag
 
-dnamein='../../data/cloud_wind/3/' # directory where the file is located
-dnameout='../../data/cloud_wind/3/plots3/' # directory where the plot will be saved
+dnamein='../../../../../ix/eschneider/hjl28/data/radiative/sub/' # directory where the file is located
+dnameout='../../../../../ix/eschneider/hjl28/plots/radiative/sub/plots/' # directory where the plot will be saved
 
 sims = ['4/', '8/', '16/', '32/', '48/']
 res_labels = ['$R_{4}$', '$R_{8}$', '$R_{16}$', '$R_{32}$', '$R_{48}$']
@@ -27,35 +27,38 @@ iend = 500
 step = 1
 time = 0
 
-Tmin = 2.9
-Tmax = 7.0
+Tmin = 3.0 #3.1 #3.0
+Tmax = 7.0 #6.3 #6.6
 
-nmin = 18.9
-nmax = 20.6
+nmin = 19.0 #19.4 #19.1
+nmax = 20.6 #20.7 
+
+vmin = -200
+vmax = 1200
 
 
 # Density, Temperature, Velocity
-titles = ['Column Density', 'Temperature']
-mins = [nmin, Tmin]
-maxs = [nmax, Tmax]
-cmaps = ['viridis', 'magma']
-labels = ['$log_{10}(N_{H} \ [cm^{-2}])$', '$log_{10}(T \ [K])$']
+titles = ['Temperature', 'Column Density', 'Velocity']
+mins = [Tmin, nmin, vmin]
+maxs = [Tmax, nmax, vmax]
+cmaps = ['plasma', 'viridis', 'magma_r']
+labels = ['$log_{10}(T \ [K])$', '$log_{10}(N_{H} \ [cm^{-2}])$', '$kms^{-1}$']
 
 
 for i in range(istart, iend):
 
     # print(i)
-    fig, axs = plt.subplots(nrows=len(sims), ncols=2, figsize=(6, 4.6))
+    fig, axs = plt.subplots(nrows=len(sims), ncols=3, figsize=(7.7, 3.5)) #6.5
     fig_color = 'black'
-    bg_color = '#DFE6F3'
+    bg_color = 'white' #DFE6F3
 
     for j in range(len(sims)):
 
-        # print(j)
+        # print(cat[j])
         if cat[j]:
             f = h5py.File(dnamein + sims[j] + 'hdf5/' +str(i) + '_slice.h5', 'r') 
         else:
-            f = h5py.File(dnamein + sims[j] + 'hdf5/' +str(i) + '_slice.h5.0', 'r') 
+            f = h5py.File(dnamein + sims[j] + 'hdf5/'  + str(i) + '_slice.h5.0', 'r')  #str(i) + '/'
         head = f.attrs # read the header attributes into a structure, called head
 
         gamma = head['gamma'] # ratio of specific heats
@@ -103,7 +106,7 @@ for i in range(istart, iend):
         if cat[j]:
             f = h5py.File(dnamein + sims[j] + 'hdf5/' + str(i) + '_proj.h5', 'r') # open the hdf5 file for reading
         else:
-            f = h5py.File(dnamein + sims[j] + 'hdf5/' + str(i) + '_proj.h5.0', 'r') # open the hdf5 file for reading
+            f = h5py.File(dnamein + sims[j] + 'hdf5/' +  str(i) + '_proj.h5.0', 'r') # str(i) + '/' # open the hdf5 file for reading
         head = f.attrs # read the header attributes into a structure, called head
         d = f['d_xy'][:]
 
@@ -111,7 +114,7 @@ for i in range(istart, iend):
         n = d / (mu*mp) # number density, particles per cm^3  
         logn = np.log10(n)
 
-        subplots = [logn.T, logT.T]
+        subplots = [logT.T, logn.T, Vx.T]
 
         for k in range(len(subplots)):
 
@@ -145,7 +148,7 @@ for i in range(istart, iend):
                 col = []
                 for x in range(j+1):
                     col.append(axs[x][k])
-                cb = fig.colorbar(im, ax=col, aspect=40, pad=.06)
+                cb = fig.colorbar(im, ax=col, aspect=50, pad=.06)
                 cbar_yticks = plt.getp(cb.ax.axes, 'yticklabels')
                 cb.ax.yaxis.set_tick_params(color=fig_color, labelsize=6)
                 cb.outline.set_edgecolor(fig_color)

@@ -10,8 +10,8 @@ mu = 0.6
 
 DE = 1 #Dual Energy Flag
 
-dnamein='../../data/cloud_wind/4_high/' # directory where the file is located
-dnameout='../../data/cloud_wind/4_high/vslices/' # directory where the plot will be saved
+dnamein='../../../../../ix/eschneider/hjl28/data/adiabatic_PPMP/sub/plotting_data/' # directory where the file is located
+dnameout='../../../../../ix/eschneider/hjl28/plots/adiabatic_PPMP/sub/png/'  # directory where the plot will be saved
 
 sims = ['4/', '8/', '16/', '32/']
 labels = ['$R_{4}$', '$R_{8}$', '$R_{16}$', '$R_{32}$']

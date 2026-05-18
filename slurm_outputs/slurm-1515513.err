@@ -1,0 +1,8 @@
+Warning: When compiling code please add the following flags to nvcc:
+         -gencode arch=compute_70,code=[compute_70,sm_70] 
+Warning: When compiling code please add the following flags to nvcc:
+         -gencode arch=compute_70,code=[compute_70,sm_70] 
+Warning: When compiling code please add the following flags to nvcc:
+         -gencode arch=compute_70,code=[compute_70,sm_70] 
+/var/spool/slurmd/job1515513/slurm_script: line 19: 1192231 Killed                  python pre_plotting.py
+slurmstepd: error: Detected 1 oom_kill event in StepId=1515513.batch. Some of the step tasks have been OOM Killed.

@@ -15,7 +15,6 @@ r_crit_a = estimate_survival_radius(
 
 print('\n Critical Survival Radius:', r_crit_a)
 
-
 # r_crit_b = estimate_survival_radius(
 #     eos = cholla_cie_eos, vwind = 1000*unyt.km/unyt.s,
 #     density_contrast = 1000, alpha = 7,

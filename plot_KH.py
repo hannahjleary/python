@@ -7,15 +7,16 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 mp = 1.672622e-24 # mass of hydrogren atom, in grams
 kb = 1.380658e-16 # boltzmann constant in ergs/K
 
-iend = 200
-dnamein = '../../../data/KH/KH_d/d_3_1/'
-dnameout = '../../../plots/KH/KH_d/d_3_1/'
+istart=0
+iend = 10
+dnamein='../../../../../ix/eschneider/hjl28/data/KH/mixinglayer/' # directory where the file is located
+dnameout='../../../../../ix/eschneider/hjl28/plots/KH/'
 
 #plot = input("Enter 'd' 'P' or 'T': ")
 
-for i in range(iend):
+for i in range(istart, iend):
 
-    f = h5py.File(dnamein+str(i)+'.h5.0', 'r')
+    f = h5py.File(dnamein+str(i)+'/' + str(i) + '.h5.0', 'r')
 
     head = f.attrs
 
@@ -38,9 +39,20 @@ for i in range(iend):
     p_c = e_c
 
     d  = f['density'][:]
-    #GE = f['GasEnergy'][:]
+    px  = f['momentum_x'][:]
+    py  = f['momentum_y'][:]
+    # pz  = f['momemtum_z'][:]
+    E = f['Energy'][:]
+    GE = f['GasEnergy'][:]
 
     f.close()
+
+    vx = px/d
+    vy = py/d
+    # vz = pz/d
+  
+    KE = 0.5 * d * (vx*vx + vy*vy)
+    # GE = E - KE
 
     mu = 0.6 # mean molecular weight (mu) (we should add this to the header, when relevant)
 
@@ -51,29 +63,39 @@ for i in range(iend):
 
     #P = GE * (gamma - 1.0) * p_c #pressure
 
-    #T = GE * (gamma - 1.0) * p_c / (n * kb) 
+    T = GE * (gamma - 1.0) * p_c / (n * kb) 
+    logT = np.log10(T)
 
-    #print(np.min(np.log10(d_cgs)))
-    #print(np.max(np.log10(d_cgs)))
+    print(np.min(logT))
+    print(np.max(logT))
 
-    fig, ax = plt.subplots()
-    ax.set_xticks(ny*np.arange(0.25, 1, 0.25))
-    ax.set_yticks(nz*np.arange(0.25, 1, 0.25))
+    # print('p_c =', p_c)
+    # print('d_c =', d_c)
+    # print('n min/max =', np.min(n), np.max(n))
+    # print('GE_cgs min/max =', np.min(GE*p_c), np.max(GE*p_c))
+
+    fig, ax = plt.subplots(figsize=(3,6))
+    ax.set_yticks(np.linspace(0,nx,13))
+    ax.set_xticks(np.linspace(0,ny,9))
+    plt.setp(ax.spines.values(), color='white')
+    plt.setp([ax.get_xticklines(), ax.get_yticklines()], color='white')
     ax.tick_params(axis='both', which='both', direction='in', color='white', labelleft=0, labelbottom=0, top=1, right=1)
-    ax.set_title('d1 = 3.0  d2 = 1.0')
-    ax.text(0.03, 0.95, '512 res', transform=ax.transAxes, color='white')
-    image = ax.imshow(np.log10(d_cgs).T, origin='lower', cmap='gist_heat', vmin=-31.3, vmax=-30.6) #originally -31.4 and -30.8
+    # ax.set_title('d1 = 3.0  d2 = 1.0')
+    # ax.text(0.03, 0.95, '512 res', transform=ax.transAxes, color='white')
+    image = ax.imshow(np.rot90(logT[:, :ny//2].T), cmap='magma', vmin=18.3, vmax=21.5) #originally -31.4 and -30.8
+    plt.hlines(y=11*nx//12, xmin=ny//8, xmax=2*ny//8, linewidth=1, color='white')
+    plt.text(2.3*ny//8, 11.1*nx//12, '1 pc', fontsize=8, color='white')
 
     # add a colorbar
-    divider = make_axes_locatable(ax)
-    cbax = divider.append_axes('right', size='5%', pad=0.05)
-    cb = plt.colorbar(image, cax = cbax)
-    cbax.tick_params(axis='y', direction='in')
-    cb.solids.set_edgecolor('face')
-    cbax.set_ylabel(r'$\mathrm{log}_{10}(\rho_A)$ [$\mathrm{g}\mathrm{cm}^{-2}$]')
-    #plt.show()
+    # divider = make_axes_locatable(ax)
+    # cbax = divider.append_axes('right', size='5%', pad=0.05)
+    # cb = plt.colorbar(image, cax = cbax)
+    # cbax.tick_params(axis='y', direction='in', labelcolor='white')
+    # cb.solids.set_edgecolor('face')
+    # cbax.set_ylabel(r'$\mathrm{log}_{10}(\rho_A)$ [$\mathrm{g}\mathrm{cm}^{-2}$]')
+    # plt.show()
 
     # save the figure
-    plt.savefig(dnameout + 'd_3_1_' +str(i)+ '.png', dpi=300, transparent=False)
+    plt.savefig(dnameout +str(i)+ '.png', dpi=300, bbox_inches='tight', pad_inches = 0, facecolor='black')
     plt.close()
         

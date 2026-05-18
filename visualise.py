@@ -10,33 +10,35 @@ mu = 0.6 # mean molecular weight (mu) of 1
 
 DE = 0 # Dual Energy Flag
 
-dnamein = '../../../../../ix/eschneider/hjl28/data/cloud_wind/4/8retry/hdf5/'
-dnameout = '../../../../../ix/eschneider/hjl28/data/cloud_wind/4/8retry/png/'
+dnamein='../../../../../ix/eschneider/hjl28/data/tests/cloud_tracking/hdf5_large_ct/raw/' # directory where the file is located
+dnameout='../../../../../ix/eschneider/hjl28/plots/tests/cloud_tracking/png_large_ct/'
 
-CAT = 1
+CAT = 0
 
 # t_cc = 4.89e4 # (vwind = 10 km/s)
-# t_cc = 4.89e3 # cloud crushing time in kyr (vwind = 100 km/s)
-t_cc = 4.89e2 # cloud crushing time in kyr (vwind = 1000 km/s)
+t_cc = 4.89e3 # cloud crushing time in kyr (vwind = 100 km/s)
+# t_cc = 4.89e2 # cloud crushing time in kyr (vwind = 1000 km/s)
 istart = 0
-iend = 1
+iend = 250
 time = 0
 
-Tmin = 1e5
-Tmax = 2e6
+Tmin = 3.5
+Tmax = 6.5
 
-nmin = 14
-nmax = 16
+nmin = 18.4
+nmax = 21.0
 
-vmin = -200 #-200
-vmax = 1200 #1200
+vmin = -30 #-200
+vmax = 250 #1200
 
 for i in range(istart, iend):
+
+    print(str(i))
     
     if CAT:
-        f = h5py.File(dnamein + str(i) + '_slice.h5', 'r') # open the hdf5 file for reading
+        f = h5py.File(dnamein + str(i) + '/' + str(i) + '_slice.h5', 'r') # open the hdf5 file for reading
     else:
-        f = h5py.File(dnamein + str(i) + '_slice.h5.0', 'r') # open the hdf5 file for reading
+        f = h5py.File(dnamein + str(i) + '/' + str(i) + '_slice.h5.0', 'r') # open the hdf5 file for reading
     head = f.attrs # read the header attributes into a structure, called head
 
     gamma = head['gamma'] # ratio of specific heats
@@ -64,6 +66,8 @@ for i in range(istart, iend):
 
     f.close()
 
+    # print(gamma)
+
     n = d * d_c/ (mu*mp) # number density, particles per cm^3  
 
     vx = px/d
@@ -79,12 +83,14 @@ for i in range(istart, iend):
 
     km = 1e-5
 
+    Px = px * v_c * km * d_c
+
     Vx = vx*v_c*km #velocity in the x direction
 
     if CAT:
-        f = h5py.File(dnamein + str(i) + '_proj.h5', 'r') # open the hdf5 file for reading
+        f = h5py.File(dnamein + str(i) + '/' + str(i) + '_proj.h5', 'r') # open the hdf5 file for reading
     else:
-        f = h5py.File(dnamein + str(i) + '_proj.h5.0', 'r') # open the hdf5 file for reading
+        f = h5py.File(dnamein + str(i) + '/' + str(i) + '_proj.h5.0', 'r') # open the hdf5 file for reading
     head = f.attrs # read the header attributes into a structure, called head
     d  = f['d_xy'][:]
     # T = f['T_xy'][:]    
@@ -94,7 +100,7 @@ for i in range(istart, iend):
     n = d / (mu*mp) # number density, particles per cm^3  
     logn = np.log10(n)
 
-   
+    logv = np.log10(Vx)
     P = np.log10(n*kb*T)
 
     f.close()
@@ -106,10 +112,10 @@ for i in range(istart, iend):
     # print('T: ', np.min(logT) , '\t' , np.max(logT))
     # print('Vx: ', np.min(Vx) , '\t' , np.max(Vx))
 
-    subplots = [logT.T, P.T, Vx.T]
+    subplots = [logT.T, logn.T, Vx.T] #subplots = [logT.T, P.T, Vx.T]
     mins = [Tmin, nmin, vmin]
     maxs = [Tmax, nmax, vmax]
-    cmaps = ['plasma', 'viridis', 'YlOrRd']
+    cmaps = ['plasma', 'viridis', 'magma_r']
     labels = ['$log_{10}(K)$', '$log_{10}(N_{H})$ [$cm^{-2}$]', '$kms^{-1}$']
 
     fig, axs = plt.subplots(nrows=len(subplots), ncols=1)
@@ -118,7 +124,7 @@ for i in range(istart, iend):
 
     for j in range(len(subplots)):
 
-        im = axs[j].imshow(subplots[j], cmap=cmaps[j]) #, vmin=mins[j], vmax = maxs[j]
+        im = axs[j].imshow(subplots[j], cmap=cmaps[j], vmin=mins[j], vmax = maxs[j]) #, vmin=mins[j], vmax = maxs[j]
         # axs[j].set_ylabel(labels[j], size=10, color=fig_color)
         axs[j].set_xticks(np.linspace(0,nx,9))
         axs[j].set_yticks(np.linspace(0,nz,5))
@@ -130,7 +136,7 @@ for i in range(istart, iend):
         if j == (len(subplots)-1):
             axs[j].tick_params(axis='both', which='both', direction='in', color=fig_color, bottom=1, left=1, top=1, right=1, 
                     labelleft=0, labelbottom=1, labeltop=0, labelright=0, labelcolor=fig_color, labelsize=6)
-            axs[j].set_xticklabels(np.round(np.arange(0,nx*dx+.01,0.4),1))
+            axs[j].set_xticklabels(np.round(np.linspace(0,nx*dx+.01, 8),1))
             # print(nx*dx)
             [l.set_visible(False) for (i,l) in enumerate(axs[j].xaxis.get_ticklabels()) if i % 2 != 0]
             axs[j].set_xlabel('$kpc$', size=8, color=fig_color)
@@ -146,8 +152,8 @@ for i in range(istart, iend):
         cax.set_ylabel(labels[j], size=8, color=fig_color)
         cb.outline.set_edgecolor(fig_color)
 
-    fig.text(0.5, 0.9, str(int(t/t_cc))+r' $t_{cc}$', size=8, color=fig_color)
-    # fig.text(0.5, 0.9, str(t)+r' $Myr$', size=8, color=fig_color)
+    # fig.text(0.5, 0.9, str(int(t/t_cc))+r' $t_{cc}$', size=8, color=fig_color)
+    fig.text(0.5, 0.9, str(t)+r' $kyr$', size=8, color=fig_color)
 
     plt.savefig(dnameout + str(i) + '.png', dpi=300, 
                 bbox_inches='tight', pad_inches = 0.2, facecolor=bg_color) #facecolor=bg_color

@@ -8,21 +8,21 @@ mp = 1.672622e-24 # mass of hydrogren atom, in grams
 kb = 1.380658e-16 # boltzmann constant in ergs/K
 mu = 0.6 # mean molecular weight (mu) of 1
 
-DE = 0 # Dual Energy Flag
+DE = 1 # Dual Energy Flag
 
-dnamein='../../data/cloud_wind/1/' # directory where the file is located
-dnameout='../../data/cloud_wind/1/Tslices2/' # directory where the plot will be saved
+dnamein='../../../../../ix/eschneider/hjl28/data/radiative/super/16retry/hdf5/' # directory where the file is located
+dnameout='../../../../../ix/eschneider/hjl28/plots/radiative/super/16retry/' # directory where the plot will be saved
 
 sims = ['4/', '8/', '16/', '32/', '48/']
 labels = ['$R_{4}$', '$R_{8}$', '$R_{16}$', '$R_{32}$',  '$R_{48}$']
 cat = [False, False, True, True, True]
 
 # t_cc = 4.89e4 # (vwind = 10 km/s)
-t_cc = 4.89e3 # cloud crushing time in kyr (vwind = 100 km/s)
-# t_cc = 4.89e2 # cloud crushing time in kyr (vwind = 1000 km/s)
+# t_cc = 4.89e3 # cloud crushing time in kyr (vwind = 100 km/s)
+t_cc = 4.89e2 # cloud crushing time in kyr (vwind = 1000 km/s)
 istart = 0
-iend = 1
-step = 1
+iend = 500
+step = 10
 
 vmin = 2.5
 vmax = 6.7
@@ -89,7 +89,7 @@ for i in range(istart, iend, step):
         fs = 10
         ls = 8
 
-        im = axs[j].imshow(logT.T, cmap='magma', vmin=vmin, vmax = vmax) #, vmin=vmin, vmax = vmax
+        im = axs[j].imshow(logT.T, cmap='magma_r', vmin=vmin, vmax = vmax) #, vmin=vmin, vmax = vmax
         axs[j].set_ylabel(labels[j], size=fs, rotation='horizontal', ha='right', va='center', color=fig_color)
         axs[j].set_xticks(np.linspace(0,nx,9))
         axs[j].set_yticks(np.linspace(0,nz,5))
@@ -118,5 +118,5 @@ for i in range(istart, iend, step):
     fig.text(0.48, 0.9, str(int(t/t_cc))+r' $t_{cc}$', size=fs, color=fig_color)
 
     plt.savefig(dnameout + str(i) + '.png', dpi=300, 
-                bbox_inches='tight', pad_inches = 0.1, transparent=True) #facecolor=bg_color
+                bbox_inches='tight') #facecolor=bg_color
     plt.close(fig)

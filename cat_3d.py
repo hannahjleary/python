@@ -4,14 +4,15 @@
 import h5py
 import numpy as np
 
-ns = 0
-ne = 1
+ns = 0 #200
+ne = 300
 step = 10 # n_hydro
-n_procs = 28 # number of processors that did the cholla calculation
-dnamein = '../../../../../ix/eschneider/hjl28/data/cloud_wind/4/48retry/hdf5/raw/'
-dnameout = '../../../../../ix/eschneider/hjl28/data/cloud_wind/4/48retry/hdf5/'
+n_procs = 2 # number of processors that did the cholla calculation
+n_procs = 2 # number of processors that did the cholla calculation
+dnamein = '../../../../../ix/eschneider/hjl28/data/tests/cloud_tracking/hdf5_large_ct/raw/'
+dnameout = '../../../../../ix/eschneider/hjl28/data/tests/cloud_tracking/hdf5_large_ct/'
 
-DE = 0
+DE = 1
 
 # loop over outputs
 for n in range(ns, ne, step):
@@ -20,9 +21,11 @@ for n in range(ns, ne, step):
   for i in range(0, n_procs):
 
     # open the output file for writing (don't overwrite if exists)
-    fileout = h5py.File(dnameout+str(n)+'.h5', 'a')
+    fileout = h5py.File(dnameout+str(n)+'/'+str(n)+'.h5', 'a')
     # open the input file for reading
-    filein = h5py.File(dnamein+str(n)+'/'+str(n)+'_slice.h5.'+str(i), 'r')
+    filein = h5py.File(dnamein+str(n)+'/'+str(n)+'.h5.'+str(i), 'r')
+
+    print(n)
     # read in the header data from the input file
     head = filein.attrs
 

@@ -8,17 +8,17 @@ mp = 1.672622e-24 # mass of hydrogren atom, in grams
 kb = 1.380658e-16 # boltzmann constant in ergs/K
 mu = 0.6
 
-DE = 1 # Dual Energy Flag
+DE = 0 # Dual Energy Flag
 
-dnamein='../../data/cloud_wind/4_largediff/16/hdf5/' # directory where the file is located
-dnameout='../../data/cloud_wind/4_largediff/16/png/' # directory where the plot will be saved
+dnamein='../../../../../ix/eschneider/hjl28/data/tests/cool_recipe/hdf5/' # directory where the file is located
+dnameout='../../../../../ix/eschneider/hjl28/plots/tests/cool_recipe/' # directory where the plot will be saved
 
-iend = 500
+iend = 50
 t_cc = 4.89e2
 
-for i in range(0, iend, 10):
+for i in range(0, iend, 1):
 
-    f = h5py.File(dnamein + str(i) + '.h5', 'r') # open the hdf5 file for reading
+    f = h5py.File(dnamein + str(i) + '/' + str(i) + '.h5.0', 'r') # open the hdf5 file for reading
     head = f.attrs # read the header attributes into a structure, called head
 
     head.keys()
@@ -53,6 +53,7 @@ for i in range(0, iend, 10):
     f.close()
 
     n = d * d_c/(mu*mp) # number density, particles per cm^3  
+    print(n)
 
     vx = px/d
     vy = py/d
@@ -63,6 +64,7 @@ for i in range(0, iend, 10):
         GE = E - KE
 
     T = GE*(gamma-1.0)*p_c / (n*kb) #temperature
+    print(T)
 
     km = 1e-5
 
@@ -80,18 +82,18 @@ for i in range(0, iend, 10):
     # log_T_y = np.log10(T_y)
 
     #Temperature Slice
-    T_slice_xz = T[:,int(ny/2),:]
-    logT_slice_xz = np.log10(T_slice_xz)
+    # T_slice_xz = T[:,int(ny/2),:]
+    # logT_slice_xz = np.log10(T_slice_xz)
 
-    #Number Density Projection
-    n_y = np.sum(n, axis=1)*dy*l_c
-    log_n_y = np.log10(n_y)
+    # #Number Density Projection
+    # n_y = np.sum(n, axis=1)*dy*l_c
+    # log_n_y = np.log10(n_y)
 
-    #Velocity in the x-direction Slice
-    Vxslice_xz = Vx[:,int(ny/2),:]
+    # #Velocity in the x-direction Slice
+    # Vxslice_xz = Vx[:,int(ny/2),:]
 
-    Tmin = 2.9
-    Tmax = 7.0
+    Tmin = 3.0
+    Tmax = 6.0
 
     nmin = 18.95
     nmax = 21.3
@@ -99,8 +101,8 @@ for i in range(0, iend, 10):
     vmin = -20
     vmax = 130
 
-
-    subplots = [logT_slice_xz.T, log_n_y.T, Vxslice_xz.T]
+    print(T.ndim)
+    subplots = [np.log10(T)]
     mins = [Tmin, nmin, vmin]
     maxs = [Tmax, nmax, vmax]
     cmaps = ['plasma', 'viridis', 'YlOrRd']
@@ -112,35 +114,37 @@ for i in range(0, iend, 10):
 
     for j in range(len(subplots)):
 
-        im = axs[j].imshow(subplots[j], cmap=cmaps[j], vmin=mins[j], vmax = maxs[j]) 
+        im = axs.imshow(subplots[j], cmap=cmaps[j], vmin=mins[j], vmax = maxs[j]) 
         # axs[j].set_ylabel(labels[j], size=10, color=fig_color)
-        axs[j].set_xticks(np.linspace(0,nx,9))
-        axs[j].set_yticks(np.linspace(0,nz,5))
-        axs[j].invert_yaxis()
+        # axs.set_xticks(np.linspace(0,nx,9))
+        # axs.set_yticks(np.linspace(0,nz,9))
+        # axs.invert_yaxis()
 
-        plt.setp(axs[j].spines.values(), color=fig_color)
-        plt.setp([axs[j].get_xticklines(), axs[j].get_yticklines()], color=fig_color)
+        plt.setp(axs.spines.values(), color=fig_color)
+        plt.setp([axs.get_xticklines(), axs.get_yticklines()], color=fig_color)
 
         if j == (len(subplots)-1):
-            axs[j].tick_params(axis='both', which='both', direction='in', color=fig_color, bottom=1, left=1, top=1, right=1, 
-                    labelleft=0, labelbottom=1, labeltop=0, labelright=0, labelcolor=fig_color, labelsize=6)
-            axs[j].set_xticklabels(np.round(np.arange(0,nx*dx+.01,0.2),1))
-            [l.set_visible(False) for (i,l) in enumerate(axs[j].xaxis.get_ticklabels()) if i % 2 != 0]
-            axs[j].set_xlabel('$kpc$', size=8, color=fig_color)
+            axs.tick_params(axis='both', which='both', direction='in', color=fig_color, bottom=1, left=1, top=1, right=1, 
+                    labelleft=0, labelbottom=0, labeltop=0, labelright=0, labelcolor=fig_color, labelsize=6)
+            axs.set_xticklabels(np.round(np.arange(0,nx*dx+.01,0.2),1))
+            [l.set_visible(False) for (i,l) in enumerate(axs.xaxis.get_ticklabels()) if i % 2 != 0]
+            # axs.set_xlabel('$kpc$', size=8, color=fig_color)
         else:
-            axs[j].tick_params(axis='both', which='both', direction='in', color=fig_color, bottom=1, left=1, top=1, right=1, 
+            axs.tick_params(axis='both', which='both', direction='in', color=fig_color, bottom=1, left=1, top=1, right=1, 
                     labelleft=0, labelbottom=0, labeltop=0, labelright=0)
             
-        divider = make_axes_locatable(axs[j])
+        divider = make_axes_locatable(axs)
         cax = divider.append_axes('right', size = 0.12, pad = 0.2)
         cb = plt.colorbar(im, cax=cax)
-        cb.set_ticks(np.round(np.linspace(mins[j], maxs[j], 5), 2))
+        cb.set_ticks(np.round(np.linspace(mins[j], maxs[j], 4), 2))
         cax.tick_params(axis='y', direction='out', color = fig_color, labelcolor=fig_color, labelsize=6)
         cax.set_ylabel(labels[j], size=8, color=fig_color)
         cb.outline.set_edgecolor(fig_color)
 
-
-    fig.text(0.5, 0.9, str(int(t/t_cc))+r' $t_{cc}$', size=8, color=fig_color)
+    t_cool=543.02
+    # fig.text(0.5, 0.9, str(int(t/t_cc))+r' $t_{cc}$', size=8, color=fig_color)
+    fig.text(0.5, 0.9, str(int(t))+r' kyr', size=8, color=fig_color)
+    fig.text(0.2, 0.9,'t_cool = '+str(int(t_cool))+r' kyr', size=8, color=fig_color)
 
     plt.savefig(dnameout + str(i) + '.png', dpi=300, 
                 bbox_inches='tight', pad_inches = 0.2, facecolor=bg_color) #facecolor=bg_color

@@ -1,0 +1,11 @@
+Warning: When compiling code please add the following flags to nvcc:
+         -gencode arch=compute_70,code=[compute_70,sm_70] 
+Warning: When compiling code please add the following flags to nvcc:
+         -gencode arch=compute_70,code=[compute_70,sm_70] 
+Warning: When compiling code please add the following flags to nvcc:
+         -gencode arch=compute_70,code=[compute_70,sm_70] 
+
+The following have been reloaded with a version change:
+  1) python/anaconda3-2019.10 => python/anaconda3-2020.11
+
+/var/spool/slurmd/job1515507/slurm_script: line 19: 1191658 Segmentation fault      (core dumped) python pre_plotting.py
