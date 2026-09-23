@@ -22,11 +22,11 @@ kb = 1.380658e-16 # boltzmann constant in ergs/K
 mu = 0.6 # mean molecular weight (mu) of 1
 
 DE = 0 # Dual Energy Flag
-DARKMODE=1
-LIGHTMODE=0
+DARKMODE=0
+LIGHTMODE=1
 
-dnamein='../../../../../ix/eschneider/hjl28/data/radiative/sub/' # directory where the file is located
-dnameout='../../../../../ix/eschneider/hjl28/plots/radiative/sub/movies/' # directory where the plot will be saved
+dnamein='../../../../../ix/eschneider/hjl28/data/archive/paper2026-PPMP/radiative/sub/' # directory where the file is located
+dnameout='../../../../../ix/eschneider/hjl28/plots/poster_plots/BUGSposter/' # directory where the plot will be saved
 
 res = ['4/', '8/', '16/', '32/', '48/']
 res_labels = ['$R_{4}$', '$R_{8}$', '$R_{16}$', '$R_{32}$', '$R_{48}$']

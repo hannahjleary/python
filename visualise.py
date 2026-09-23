@@ -7,29 +7,41 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 mp = 1.672622e-24 # mass of hydrogren atom, in grams
 kb = 1.380658e-16 # boltzmann constant in ergs/K
 mu = 0.6 # mean molecular weight (mu) of 1
+SOLAR_METAL_MASS_FRAC = 0.01295
 
-DE = 0 # Dual Energy Flag
-
-dnamein='../../../../../ix/eschneider/hjl28/data/tests/cloud_tracking/hdf5_large_ct/raw/' # directory where the file is located
-dnameout='../../../../../ix/eschneider/hjl28/plots/tests/cloud_tracking/png_large_ct/'
-
+DE = 1 # Dual Energy Flag
+CT = 0 #Cloud Tracking Flag
 CAT = 0
 
-# t_cc = 4.89e4 # (vwind = 10 km/s)
-t_cc = 4.89e3 # cloud crushing time in kyr (vwind = 100 km/s)
+dnamein='../../../../../ix/eschneider/hjl28/data/tests/dev-test/hdf5/' # directory where the file is located
+dnameout='../../../../../ix/eschneider/hjl28/data/tests/dev-test/png/'
+
+t_cc = 4.89e4 # (vwind = 10 km/s)
+#t_cc = 4.89e3 # cloud crushing time in kyr (vwind = 100 km/s)
 # t_cc = 4.89e2 # cloud crushing time in kyr (vwind = 1000 km/s)
 istart = 0
-iend = 250
+iend = 10
 time = 0
 
 Tmin = 3.5
 Tmax = 6.5
 
-nmin = 18.4
-nmax = 21.0
+nmin = 19.0
+nmax = 20.2
 
-vmin = -30 #-200
-vmax = 250 #1200
+vmin = -20 #-200
+vmax = 120 #1200
+
+Zmin = -0.0
+Zmax = 1.4
+
+if CT:
+    velocity_shifts = []
+
+    with open(dnamein + "cloud_velocities.txt", "r") as f:
+        lines = f.readlines()
+        for line in lines:
+            velocity_shifts.append(float(line))
 
 for i in range(istart, iend):
 
@@ -40,6 +52,7 @@ for i in range(istart, iend):
     else:
         f = h5py.File(dnamein + str(i) + '/' + str(i) + '_slice.h5.0', 'r') # open the hdf5 file for reading
     head = f.attrs # read the header attributes into a structure, called head
+    # print(list(f.keys()))
 
     gamma = head['gamma'] # ratio of specific heats
     t  = head['t'] # time of this snapshot, in kyr
@@ -60,13 +73,20 @@ for i in range(istart, iend):
     py  = f['my_xy'][:]
     pz  = f['mz_xy'][:]
     E = f['E_xy'][:]
+    d_metals = f['metal_density_xy'][:]
+    # scalar = f['scalar0_xy'][:]
 
     if DE:
         GE = f['GE_xy'][:]
 
     f.close()
 
+    Z = d_metals / d
+    Z_sol = Z / SOLAR_METAL_MASS_FRAC
+
     # print(gamma)
+
+    # scalar = scalar / d
 
     n = d * d_c/ (mu*mp) # number density, particles per cm^3  
 
@@ -81,11 +101,17 @@ for i in range(istart, iend):
     T = GE*(gamma-1.0)*p_c / (n*kb) #temperature
     logT = np.log10(T)
 
+    print(np.min(T))
+
     km = 1e-5
 
     Px = px * v_c * km * d_c
 
     Vx = vx*v_c*km #velocity in the x direction
+    
+    if CT:
+        Vx = Vx + velocity_shifts[i]
+        print(str(Vx[10, int(ny/2)]))
 
     if CAT:
         f = h5py.File(dnamein + str(i) + '/' + str(i) + '_proj.h5', 'r') # open the hdf5 file for reading
@@ -112,11 +138,11 @@ for i in range(istart, iend):
     # print('T: ', np.min(logT) , '\t' , np.max(logT))
     # print('Vx: ', np.min(Vx) , '\t' , np.max(Vx))
 
-    subplots = [logT.T, logn.T, Vx.T] #subplots = [logT.T, P.T, Vx.T]
-    mins = [Tmin, nmin, vmin]
-    maxs = [Tmax, nmax, vmax]
-    cmaps = ['plasma', 'viridis', 'magma_r']
-    labels = ['$log_{10}(K)$', '$log_{10}(N_{H})$ [$cm^{-2}$]', '$kms^{-1}$']
+    subplots = [logT.T, logn.T, Vx.T, Z_sol.T] #subplots = [logT.T, P.T, Vx.T]
+    mins = [Tmin, nmin, vmin, Zmin]
+    maxs = [Tmax, nmax, vmax, Zmax]
+    cmaps = ['plasma', 'viridis', 'magma_r', 'cividis']
+    labels = ['$log_{10}(K)$', '$log_{10}(N_{H})$ [$cm^{-2}$]', '$kms^{-1}$', '$Z/Z_{\odot}$']
 
     fig, axs = plt.subplots(nrows=len(subplots), ncols=1)
     fig_color = 'white'
@@ -136,7 +162,7 @@ for i in range(istart, iend):
         if j == (len(subplots)-1):
             axs[j].tick_params(axis='both', which='both', direction='in', color=fig_color, bottom=1, left=1, top=1, right=1, 
                     labelleft=0, labelbottom=1, labeltop=0, labelright=0, labelcolor=fig_color, labelsize=6)
-            axs[j].set_xticklabels(np.round(np.linspace(0,nx*dx+.01, 8),1))
+            axs[j].set_xticklabels(np.round(np.linspace(0,nx*dx+.01, 9),1))
             # print(nx*dx)
             [l.set_visible(False) for (i,l) in enumerate(axs[j].xaxis.get_ticklabels()) if i % 2 != 0]
             axs[j].set_xlabel('$kpc$', size=8, color=fig_color)

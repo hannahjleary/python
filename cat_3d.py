@@ -5,14 +5,14 @@ import h5py
 import numpy as np
 
 ns = 0 #200
-ne = 300
-step = 10 # n_hydro
-n_procs = 2 # number of processors that did the cholla calculation
-n_procs = 2 # number of processors that did the cholla calculation
-dnamein = '../../../../../ix/eschneider/hjl28/data/tests/cloud_tracking/hdf5_large_ct/raw/'
-dnameout = '../../../../../ix/eschneider/hjl28/data/tests/cloud_tracking/hdf5_large_ct/'
+ne = 400
+step = 25 # n_hydro
+# n_procs = 2 # number of processors that did the cholla calculation
+n_procs = 4 # number of processors that did the cholla calculation
+dnamein = '../../../../../ix/eschneider/hjl28/data/tests/dev-test/hdf5/'
+dnameout = '../../../../../ix/eschneider/hjl28/data/tests/dev-test/hdf5/'
 
-DE = 1
+DE = 0
 
 # loop over outputs
 for n in range(ns, ne, step):

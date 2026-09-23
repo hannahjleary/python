@@ -5,11 +5,11 @@ import h5py
 import numpy as np
 
 ns = 0
-ne = 300
+ne = 10
 step = 1 # n_hydro
-n_procs = 2 # number of processors that did the cholla calculation
-dnamein = '../../../../../ix/eschneider/hjl28/data/tests/cloud_tracking/hdf5_large_ct/raw/'
-dnameout = '../../../../../ix/eschneider/hjl28/data/tests/cloud_tracking/hdf5_large_ct/'
+n_procs =  4 # number of processors that did the cholla calculation
+dnamein = '../../../../../ix/eschneider/hjl28/data/tests/dev-test/hdf5/'
+dnameout = '../../../../../ix/eschneider/hjl28/data/tests/dev-test/hdf5/'
 
 DE = True # set to True if Dual Energy flag was used
 SCALAR = False # set to True if Scalar was used

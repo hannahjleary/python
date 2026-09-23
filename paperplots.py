@@ -20,10 +20,10 @@ mp = 1.672622e-24 # mass of hydrogren atom, in grams
 kb = 1.380658e-16 # boltzmann constant in ergs/K
 mu = 0.6 # mean molecular weight (mu) of 1
 
-DE = 1 # Dual Energy Flag
-DARKMODE = 1
+DE = 0 # Dual Energy Flag
+DARKMODE = 0
 MASS = 1
-VELOCITY = 1
+VELOCITY = 0
 
 # model = input("Enter a100, a1000, r100, or r1000: ")
 model = sys.argv[1]
@@ -63,8 +63,8 @@ if model == "a1000":
 if model == "r100":
     # dnamein='../../../../../ix/eschneider/hjl28/data/radiative/sub/plotting_data/' # directory where the file is located
     # dnameout='../../../../../ix/eschneider/hjl28/plots/radiative/sub/png/' # directory where the plot will be saved
-    dnamein='../../../../../ix/eschneider/hjl28/data/tests/cloud_tracking/hdf5_large/' # directory where the file is located
-    dnameout='../../../../../ix/eschneider/hjl28/plots/tests/cloud_tracking/' # directory where the plot will be saved
+    dnamein='../../../../../ix/eschneider/hjl28/data/archive/paper2026-PPMP/radiative/sub/plotting_data/' # directory where the file is located
+    dnameout='../../../../../ix/eschneider/hjl28/plots/radiative/sub/png/' # directory where the plot will be saved
     vwind = 100
     t_cc = 4.89e3 # cloud crushing time in kyr (vwind = 100 km/s)
     tick_labels = np.arange(0, 10+1, 2)
@@ -72,14 +72,14 @@ if model == "r100":
     # linelabel2 = "t = 7 $t_{cc}$"
     # textheight1 = 0.1
     # textheight2 = 0.1
-    # ram_scale = 1.0
-    min = -0.07
-    vmax = 1.19
+    ram_scale = 1.0
+    min = 0.0
+    vmax = 1.2
     mmax = 4.6
     LEGEND = 1
     CUTOFFS = 1
 if model == "r1000":
-    dnamein='../../../../../ix/eschneider/hjl28/data/radiative/super/plotting_data/' # directory where the file is located
+    dnamein='../../../../../ix/eschneider/hjl28/data/archive/paper2026-PPMP/radiative/super/plotting_data/' # directory where the file is located
     dnameout='../../../../../ix/eschneider/hjl28/plots/radiative/super/png/' # directory where the plot will be saved
     vwind = 1000
     t_cc = 4.89e2 # cloud crushing time in kyr (vwind = 1000 km/s)
@@ -91,14 +91,16 @@ if model == "r1000":
     ram_scale = 4.0
     min = 0.0
     vmax = 0.54
-    mmax = 1.19
+    mmax = 1.2
     LEGEND = 1
     CUTOFFS = 1
 
 num = 50
 nstep = 10
-
-# masses3 
+cutoffs=np.zeros(5)
+masses = np.zeros((5, 50))
+velocities = np.zeros((5, 50))
+t=[]
 
 
 if MASS:
@@ -116,7 +118,7 @@ if MASS:
                 if int(line[0]) == 1:
                     cutoffs[j] = int(i/nstep)
             t.append(float(line[1]))
-            masses3[j][int(i/nstep)] = float(line[2])
+            masses[j][int(i/nstep)] = float(line[2])
             i += 10
     # j = 0
     # i = 0
@@ -219,7 +221,7 @@ if VELOCITY:
             if j==0:
                 t.append(float(line[1]))
             # print(line[0], line[1], line[2])
-            velocities3[j][int(i/nstep)] = float(line[2])/vwind
+            velocities[j][int(i/nstep)] = float(line[2])/vwind
             i += 10
             k += 1
     # j = 0
@@ -310,14 +312,14 @@ else:
     spine_color = 'black'
     bg_color = 'white'
 
-colors = sns.color_palette('rocket_r', len(velocities3)+2)
+colors = sns.color_palette('rocket_r', len(velocities)+2)
 # plt.rcParams.update({"font.family" : "Helvetica"})
 
 labels = ['$R_{4}$', '$R_{8}$', '$R_{16}$', '$R_{32}$', '$R_{48}$']
 # tick_labels = np.arange(0, 10+1, 2) # 0, upper limit + 1, upper limit / 5
 #0, 10+1, 2 for all sims except radiatice supersonic is 0, 20+1, 4
-fsize1 = 10
-fsize2 = 12
+fsize1 = 12
+fsize2 = 14
 
 time = np.array(t)
 ram_v = (float(vwind)/(ram_scale * float(10**2) * 3.086e16 * 0.05)) * (3.154e10 * time)
@@ -359,7 +361,7 @@ if MASS and VELOCITY:
 
 if MASS and not VELOCITY:
     # sns.set_palette('Set1')
-    fig, ax = plt.subplots(figsize=(4,2.3))
+    fig, ax = plt.subplots(figsize=(4,2.7))
     ax.set_facecolor(bg_color)
     # plt.plot(masses3[2], label=r'$\rho > \rho_{cl,i}/3$', linewidth=1.3,zorder=2)
     # plt.plot(masses5[2], label=r'$\rho > \rho_{cl,i}/5$', linewidth=1.3,zorder=2)
@@ -371,31 +373,36 @@ if MASS and not VELOCITY:
     # # plt.text(21, textheight1, linelabel1, color='gray', rotation=90, fontsize=fsize1, zorder=1) #17.25
     # plt.axvline(x=30, color='gray', linestyle='dashed', linewidth=1)
     # plt.text(36, textheight2, linelabel2, color='gray', rotation=90, fontsize=fsize1, zorder=1) #32.35
-    for s in range(len(masses3)):
-        ax.plot(masses3[s], label=labels[s], color=colors[s], linewidth=1.3, zorder=2)
+    for s in range(len(masses)):
+        ax.plot(masses[s], label=labels[s], color=colors[s], linewidth=1.5, zorder=2)
         if CUTOFFS:
-            ax.plot(cutoffs[s], masses3[s][int(cutoffs[s])], c=text_color, linestyle=' ', marker='X', markersize=4, zorder=2)
+            ax.plot(cutoffs[s], masses[s][int(cutoffs[s])], c=text_color, linestyle=' ', marker='X', markersize=4, zorder=2)
     if LEGEND:
-        ax.legend(loc='upper center', ncol=3, fontsize=fsize1, bbox_to_anchor=(0.5,1.36), facecolor=bg_color, labelcolor=text_color, edgecolor=spine_color)
+        leg = ax.legend(loc='upper center', ncol=3, fontsize=fsize1, bbox_to_anchor=(0.5,1.35), facecolor=bg_color, edgecolor=spine_color)
+        for text in leg.get_texts():
+            text.set_color(text_color)
+        leg.get_frame().set_linewidth(1.7)
     plt.xlabel("t $[t_{cc}]$", color=text_color, fontsize=fsize2) #$[t_{cc}]$
     # ax.set_xlabel("time", color=text_color, fontsize=fsize2)
     # plt.ylabel(r"$[M(\rho > \rho_{cl}/3)/M_{i}]$", color=text_color, fontsize=fsize2)
     plt.ylabel(r"$[M_{cl}/M_{i}]$", color=text_color, fontsize=fsize2)
     # ax.set_ylabel(r"Cloud Mass", color=text_color, fontsize=fsize2)
     ax.set_ylim(min, mmax)
-    plt.text(0.76, 0.79, model, transform=fig.transFigure, fontsize=fsize1)
+    # plt.text(0.76, 0.79, model, transform=fig.transFigure, fontsize=fsize1)
     ax.set_xticks(np.arange(0, 50+1, nstep))
     ax.set_xticklabels(tick_labels)
-    ax.tick_params(labelsize=fsize1, labelbottom=1, color=spine_color, labelcolor=text_color)
+    ax.tick_params(labelsize=fsize1, direction='in', labelbottom=1, color=spine_color, labelcolor=text_color, width=1.7)
     plt.setp(ax.spines.values(), color=spine_color)
     plt.setp([ax.get_xticklines(), ax.get_yticklines()], color=spine_color)
+    for spine in ax.spines.values():
+        spine.set_linewidth(1.7)
 
-    plt.savefig(dnameout + 'dm-' + model + '-slide.png', dpi=300, 
-            bbox_inches='tight', pad_inches = 0.2, facecolor=bg_color) #facecolor=bg_color
+    plt.savefig(dnameout + 'dm-' + model + '-slide2.png', dpi=300, 
+            bbox_inches='tight', pad_inches = 0.1, facecolor=bg_color) #facecolor=bg_color
 
 if VELOCITY and not MASS:
     # sns.set_palette('Set1')
-    fig, ax = plt.subplots(figsize=(4,2.3))
+    fig, ax = plt.subplots(figsize=(4,2.7))
     ax.set_facecolor(bg_color)
     # plt.plot(velocities3[2], label=r'$\rho > \rho_{cl,i}/3$', linewidth=1.3,zorder=2)
     # plt.plot(velocities5[2], label=r'$\rho > \rho_{cl,i}/5$', linewidth=1.3,zorder=2)
@@ -407,25 +414,30 @@ if VELOCITY and not MASS:
     # # plt.text(21, textheight1, linelabel1, color='gray', rotation=90, fontsize=fsize1, zorder=1) #21, 0.5
     # plt.axvline(x=30, color='gray', linestyle='dashed', linewidth=1)
     # plt.text(36, textheight2, linelabel2, color='gray', rotation=90, fontsize=fsize1, zorder=1) #36, 0.5
-    for s in range(len(velocities3)):
-        ax.plot(velocities3[s], label=labels[s], color=colors[s], linewidth=1.3, zorder=2)
+    for s in range(len(velocities)):
+        ax.plot(velocities[s], label=labels[s], color=colors[s], linewidth=1.5, zorder=2)
         if CUTOFFS:
-            ax.plot(cutoffs[s], velocities3[s][int(cutoffs[s])], c=text_color, linestyle=' ', marker='X', markersize=4, zorder=2)
-    ax.plot(ram_v, color='darkgray', linewidth=1, label='$v_{ram}$', zorder=1)
+            ax.plot(cutoffs[s], velocities[s][int(cutoffs[s])], c=text_color, linestyle=' ', marker='X', markersize=4, zorder=2)
+    ax.plot(ram_v, color='darkgray', linewidth=1.3, label='$v_{ram}$', zorder=1)
     if LEGEND:
-        ax.legend(loc='upper center', ncol=3, fontsize=fsize1, bbox_to_anchor=(0.5,1.36), facecolor=bg_color, labelcolor=text_color, edgecolor=spine_color) #columnspacing=0.7
+        leg = ax.legend(loc='upper center', ncol=3, fontsize=fsize1, bbox_to_anchor=(0.5,1.35), facecolor=bg_color, edgecolor=spine_color) #columnspacing=0.7
+        for text in leg.get_texts():
+            text.set_color(text_color)
+        leg.get_frame().set_linewidth(1.7)
     ax.set_xlabel("t $[t_{cc}]$", color=text_color, fontsize=fsize2)
     # ax.set_xlabel("time", color=fig_color, fontsize=fsize2)
     # ax.set_ylabel(r"$[\bar{v}_x(\rho > \rho_{cl}/3)/v_{w}]$", color=text_color, fontsize=fsize2)
-    ax.set_ylabel(r"$[\bar{v}_x/v_{w}]$", color=text_color, fontsize=fsize2)
+    ax.set_ylabel(r"$[\bar{v}_{x,cl}/v_{w}]$", color=text_color, fontsize=fsize2)
     ax.set_ylim(min, vmax)
-    plt.text(0.23, 0.79, model, transform=fig.transFigure, fontsize=fsize1)
+    # plt.text(0.23, 0.79, model, transform=fig.transFigure, fontsize=fsize1)
     ax.set_xticks(np.arange(0, 50+1, nstep))
     ax.set_xticklabels(tick_labels)
-    ax.tick_params(labelsize=fsize1, labelbottom=1, color=spine_color, labelcolor=text_color)
+    ax.tick_params(labelsize=fsize1, direction='in', labelbottom=1, color=spine_color, labelcolor=text_color, width=1.7)
     plt.setp(ax.spines.values(), color=spine_color)
     plt.setp([ax.get_xticklines(), ax.get_yticklines()], color=spine_color)
+    for spine in ax.spines.values():
+        spine.set_linewidth(1.7)
     # ax.set_xticklabels(n_step*np.arange(0, num))
         # [l.set_visible(False) for (i,l) in enumerate(ax.xaxis.get_ticklabels()) if i % 10 != 0]
-    plt.savefig(dnameout + 'dv-' + model + '-slide.png', dpi=300, 
-            bbox_inches='tight', pad_inches = 0.2, facecolor=bg_color) #facecolor=bg_color
+    plt.savefig(dnameout + 'dv-' + model + '-slide2.png', dpi=300, 
+            bbox_inches='tight', pad_inches = 0.1, facecolor=bg_color) #facecolor=bg_color

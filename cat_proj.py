@@ -6,11 +6,11 @@ import h5py
 import numpy as np
 
 ns = 0
-ne = 300
+ne = 400
 # step = 10 # n_hydro
-n_procs = 2 # number of processors that did the cholla calculation
-dnamein = '../../../../../ix/eschneider/hjl28/data/tests/cloud_tracking/hdf5_large_ct/raw/'
-dnameout = '../../../../../ix/eschneider/hjl28/data/tests/cloud_tracking/hdf5_large_ct/'
+n_procs = 4 # number of processors that did the cholla calculation
+dnamein = '../../../../../ix/eschneider/hjl28/data/tests/cool_recipe/mpi_test/'
+dnameout = '../../../../../ix/eschneider/hjl28/data/tests/cool_recipe/mpi_test/'
 
 # loop over the output times
 for n in range(ns, ne):
